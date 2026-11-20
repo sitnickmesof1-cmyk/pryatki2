@@ -1,0 +1,43 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    paths-ignore:
+      - '**.jar'
+      - 'ERROR_LOG.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Скачивание кода
+        uses: actions/checkout@v4
+
+      - name: Установка Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Сборка и сохранение файла
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          if mvn -B package --file pom.xml > ERROR_LOG.txt 2>&1; then
+            rm -f ERROR_LOG.txt
+            cp target/PryatkiPlugin-1.0-SNAPSHOT.jar PryatkiPlugin.jar
+            git add -A
+            git commit -m "Ready JAR" || true
+            git push
+          else
+            git add ERROR_LOG.txt
+            git commit -m "Save error log" || true
+            git push
+            exit 1
+          fi
