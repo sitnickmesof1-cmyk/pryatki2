@@ -1,0 +1,11 @@
+name: PryatkiPlugin
+version: '1.0'
+main: me.pryatki.PryatkiPlugin
+api-version: '1.21.11'
+commands:
+  pryatki:
+    description: Запустить игру в прятки
+    usage: /pryatki
+  nablydat:
+    description: Наблюдать за искателем из нычки
+    usage: /nablydat
